@@ -1,0 +1,46 @@
+{% extends 'hotel/base.html' %}
+{% block title %}Complate Order {% endblock title %}
+{% block content %}
+
+<div class="container my-2">
+    <div class="row ">
+        <div class="col-8">
+            <h6>welcome - {{a.admin_name}} </h6>
+    </div>
+
+    <div class="col-4">
+        <a href="/admin_dashboard"   class="btn btn-danger" >Back</a>
+        </div>
+    </div>
+    </div>
+<div class="container">
+
+    <table class="table">
+        <div class="row border">
+        <thead>
+          <tr>
+            <th scope="col">name</th>
+            <th scope="col">Dish name</th>
+            <th scope="col">Qty</th>
+            <th scope="col">Total Price</th>
+            <th scope="col">Date</th>
+          </tr>
+        </thead>
+    </div>
+        <tbody>
+          <tr>{% for o in o %}
+            <div class="row">
+                
+            <div class="col-3"><td>{{o.added_by.admin_name}}</td></div>
+            <div class="col-3"><td>{{o.dish_marathi_name}}</td></div>
+            <div class="col-3"><td>{{o.qty}}</td></div>
+            <div class="col-1"><td>{{o.total_price}}</td></div>
+            <div class="col-2"><td>{{o.ordered_date}}</td></div>
+        </div>
+          </tr>
+   
+          {% endfor  %}
+        </tbody>
+      </table>
+</div>
+{% endblock content %}

@@ -1,0 +1,29 @@
+{% extends 'hotel/base.html' %}
+{% block title %}Book Order {% endblock title %}
+{% block content %}
+        <div class="container">
+          
+          <div class="col-sm-4 border my-5 mx-3">
+            <div class="row text-center my-3">
+              <div class="col-12"><h4>panir masala</h4></div>
+              <input  type="hidden" id="myText${data.dish[key].id}" value="${data.dish[key].dish_name}"></input>
+            </div>
+              <div class="row text-center">
+                <div class="col-12"><h5>Rs- 130</h5></div>
+                
+              </div>
+            
+              <div class="row my-4 text-center">
+                    <div class="col-2 mx-2"><button type="button" onclick="minus(${data.dish[key].id})" class="btn btn-success px-3">-</button></div>
+                    <div class="col-1"><strong  id="qty${data.dish[key].id}"  >1</strong></div>
+                    <div class="col-2"><button type="button" onclick="plus(${data.dish[key].id})" class="btn btn-success px-3" >+</button></div>
+                    <div class="col-6"><button type="button" class="btn btn-danger mx-auto" onclick=add_to_cart(${data.dish[key].id},${data.dish[key].price})>Confirm </button></div>
+                  </div>
+              </div>
+            
+        
+        
+        </div>
+
+
+{% endblock content %}

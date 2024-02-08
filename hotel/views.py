@@ -289,7 +289,7 @@ def complate_order(request):
         context={}
         admin_mobile = request.session['admin_mobile']
         a=Admin.objects.get(admin_mobile=admin_mobile)
-        o=OrderDetail.objects.all()
+        o=OrderDetail.objects.all().order_by('-id')
         context={
             'a':a,
             'o':o

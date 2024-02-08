@@ -1,0 +1,181 @@
+
+ip
+139.59.31.88
+
+
+
+%%%%% Install virtualenv %%%%%
+
+sudo apt install python3-virtualenv
+
+
+
+
+
+********** Create Virtual env *****
+
+virtualenv venv
+
+
+
+
+
+********** Activate Virtual env ****
+
+source venv/bin/activate
+
+
+
+
+***** install django ******
+
+pip install django
+
+
+
+
+******** Install Gunicorn ******
+ 
+pip install gunicorn
+
+
+
+
+
+*********** Deactivate Virtualenv *****
+
+deactivate
+
+
+
+
+************ Create System Socket File for Gunicorn *******
+
+Example:- sudo nano /etc/systemd/system/ashirwad.com.gunicorn.socket
+
+cd  /etc/systemd/system/
+
+sudo nano ashirwad.tejorder.com.gunicorn.socket
+
+
+
+[Unit]
+Description=ashirwad.tejorder.com.gunicorn socket
+
+[Socket]
+ListenStream=/run/ashirwad.tejorder.com.gunicorn.sock
+
+[Install]
+WantedBy=sockets.target
+
+
+
+
+************** Create System Service File for Gunicorn ******
+Syntax:- sudo nano /etc/systemd/system/your_domain.gunicorn.service
+Example:- sudo nano /etc/systemd/system/sonamkumari.com.gunicorn.service
+
+cd  /etc/systemd/system/
+
+sudo nano ashirwad.tejorder.com.gunicorn.service
+
+
+[Unit]
+Description=ashirwad.tejorder.com.gunicorn daemon
+Requires=ashirwad.tejorder.com.gunicorn.socket
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/root/Ashirwad-Hotel
+ExecStart=/root/Ashirwad-Hotel/venv/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/ashirwad.tejorder.com.gunicorn.sock \
+          ashirwad.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+----------------------------------------------------------------
+sudo systemctl start ashirwad.tejorder.com.gunicorn.socket
+
+sudo systemctl start ashirwad.tejorder.com.gunicorn.service
+
+-----------------------------------------------------------------
+sudo systemctl enable ashirwad.tejorder.com.gunicorn.socket
+
+sudo systemctl enable ashirwad.tejorder.com.gunicorn.service
+
+-----------------------------------------------------------------------
+
+sudo systemctl status ashirwad.tejorder.com.gunicorn.socket
+
+sudo systemctl status ashirwad.tejorder.com.gunicorn.service
+
+-------------------------------------------
+sudo systemctl daemon-reload
+
+sudo systemctl restart ashirwad.tejorder.com.gunicorn
+
+--------------------------------
+
+
+****************** Create Virtual Host File ******
+Syntax:- sudo nano /etc/nginx/sites-available/your_domain
+Example:- sudo nano /etc/nginx/sites-available/sonamkumari.com
+
+
+cd /etc/nginx/sites-available
+
+sudo nano ashirwad.tejorder.com
+
+-----------------------------------
+
+server{
+    listen 80;
+    listen [::]:80;
+
+    server_name ashirwad.prasannadigital.in www.ashirwad.prasannadigital.in;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    location / {
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://unix:/run/ashirwad.tejorder.com.gunicorn.sock;
+    }
+
+    
+}
+
+-----------------------------------------------------
+
+########## Enable Virtual Host or Create Symbolic Link of Virtual Host File ########
+
+sudo ln -s /etc/nginx/sites-available/ashirwad.tejorder.com /etc/nginx/sites-enabled/ashirwad.tejorder.com
+
+
+%%%%%%%%%%%%%%%%%%%%% Check Configuration is Correct or Not %%%%%
+
+sudo nginx -t
+
+
+
+%%%%%%%%%%%% Restart Nginx %%%%%%%%%
+
+sudo service nginx restart
+-------------------------------------
+
+
+********** restart ******
+
+sudo systemctl daemon-reload
+sudo systemctl restart ashirwad.tejorder.com.gunicorn
+
+
